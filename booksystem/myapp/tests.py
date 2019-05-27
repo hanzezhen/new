@@ -24,7 +24,7 @@ def index(request):
 
 class ep():
     def __init__(self,stu,num):
-        self.yuyue = yuyue.objects.filter(ysid=stu)
+        self.yuyue = yuyue.objects.filter(ysid=stu).order_by('-ydate')
         self.num =num
     def __getitem__(self, item):
         try:
@@ -90,7 +90,7 @@ def baseinfo(request):
 
 class ep2():
     def __init__(self,stu):
-        self.yuyue = yuyue.objects.filter(ysid=stu)
+        self.yuyue = yuyue.objects.filter(ysid=stu).order_by('-ydate')
     def __getitem__(self, item):
         try:
             return self.yuyue[item]
@@ -122,21 +122,32 @@ def myappointment(request):
     print('当前预约：',yuyuel)
     return render(request,'myappointment.html',{'ep1':yuyuel,'ep2':lishil})
 
+class equi_p:
+    def __init__(self,stu,ep):
+        a=quanxian.objects.filter(qsid=stu).filter(qeid=ep)
+        if a:
+            self.quanxian1 = '正常'
+        else:self.quanxian1 = '无法使用'
+        self.name = ep.ename
+
+
 
 def epappoint(request):
-    class equip:
-        id=1
-        name='某某设备'
-    cequip=equip()
-    dequip=equip()
-    eqlist=[cequip,dequip,dequip,dequip,dequip,dequip]
+    name = request.session.get('username')
+    stu = student.objects.filter(sname=name)[0]
+    ep = equipment.objects.all()
+    eqlist=[]
+    for item in ep:
+        eqlist.append(equi_p(stu,item))
     return render(request,'epappoit.html',{'equip':eqlist})
 
 
 
 import datetime
 from .datecal import dateRange
-def appoint(request):
+
+
+def appoint(request,num1):
     stimelist = list(range(7))
     rangelist = list(range(14))
     now_time = datetime.datetime.now()

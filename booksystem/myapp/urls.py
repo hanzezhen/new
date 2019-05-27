@@ -33,7 +33,7 @@ urlpatterns = [
     url(r'^baseinfo/', tests.baseinfo),
     url(r'^myappointment/', tests.myappointment),
     url(r'^epappoint/', tests.epappoint),
-    url(r'^appoint/', tests.appoint),
+    url(r'^appoint(\d{1,3})/', tests.appoint),
     url(r'^appointfalse/', tests.appointfalse),
 
     url(r"^",include('myapp.hanzezhen_url',namespace='myapp1'))
