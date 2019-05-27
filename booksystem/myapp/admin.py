@@ -12,7 +12,7 @@ class studentAdmin(admin.ModelAdmin):
 
     def sid1(self):
         return self.sid
-    sid1.short_description='学号'
+    sid1.short_description='用户名'
 
     def sname1(self):
         return self.sname
@@ -113,7 +113,15 @@ class equipmentAdmin(admin.ModelAdmin):
         return self.exianshi
     exianshi1.short_description = "限时"
 
-    list_display = [eid1,ename1,eshiyanshi1,exianshi1]
+    def eguanliyuan1(self):
+        return self.eguanliyuan
+    eguanliyuan1.short_description = "管理人"
+
+    def ezhuangtai1(self):
+        return self.ezhuangtai
+    ezhuangtai1.short_description = "状态"
+
+    list_display = [eid1,ename1,eshiyanshi1,exianshi1,eguanliyuan1,ezhuangtai1]
     list_filter = ['ename','eshiyanshi']
     search_fields = ['ename','eshiyanshi']
 admin.site.register(models.equipment,equipmentAdmin)

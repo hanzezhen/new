@@ -125,9 +125,11 @@ def myappointment(request):
 class equi_p:
     def __init__(self,stu,ep):
         a=quanxian.objects.filter(qsid=stu).filter(qeid=ep)
+        print('a:',stu,ep,a)
         if a:
-            self.quanxian1 = '正常'
-        else:self.quanxian1 = '无法使用'
+            self.quanxian1 = 1
+        else:self.quanxian1 = 0
+        self.eid=ep.eid
         self.name = ep.ename
 
 
@@ -145,15 +147,53 @@ def epappoint(request):
 
 import datetime
 from .datecal import dateRange
+import numpy as np
+import re
+
+
+class giveout():
+    def __init__(self,matrix):
+        self.matrix=matrix
+
+    def __getitem__(self, item):
+        return list(self.matrix[item,:])
 
 
 def appoint(request,num1):
+    name = request.session.get('username')
+    stu = student.objects.filter(sname=name)[0]
+    ep = equipment.objects.filter(eid=num1)[0]
     stimelist = list(range(7))
     rangelist = list(range(14))
     now_time = datetime.datetime.now()
     datelist = dateRange(now_time)
+    yue = yuyue.objects.filter(yeid=ep)
+    yueli=np.zeros((24,7),dtype=object)
+    kkk = 0
+    for item in datelist:
+        a= datetime.datetime.strptime(item, '%Y-%m-%d')
+        b=yue.filter(ydate=a)
+        if b:
+            for ii in b:
+                ts = ii.ytimestart
+                st = r'([1-9]+)：'
+                p = re.compile(st)
+                sss = re.search(p, ts).group(1)
+                sss = int(sss) - 1
+                lll=int(ii.shichang)
 
-    return render(request,'appoint.html',{'t':stimelist,'s':rangelist,'date1':datelist})
+                for i in range(lll):
+                    print(type(ii))
+                    yueli[sss,kkk]=ii.ysid.sname
+        kkk=kkk+1
+    give =giveout(yueli)
+    chuandi =[]
+    for gi in give:
+        aa=list(gi)
+        chuandi.append(aa)
+    return render(request,'appoint.html',{'t':stimelist,'s':rangelist,'date1':datelist,'epq':ep,'yueli1':chuandi
+                                          })
 
 def appointfalse(request):
     return render(request,'appintfalse.html')
+

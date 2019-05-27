@@ -82,8 +82,15 @@
                         <img src="/static/images/1.jpg" alt="Norway" style="width:100%">
                         <div class="container">
                             <p>{{item.name}}</p>
+                            {% if item.quanxian1 == 1%}
                             <p style="color: green">正常</p>
                             <a href="/appoint{{item.eid}}/">点击预约</a>
+                            {% endif %}
+                            {% if not item.quanxian1 == 1%}
+                            <p style="color: red">无法使用</p>
+                            <p style="color: red">联系管理员获取权限</p>
+
+                            {% endif %}
                         </div>
                     </div>
                     {% endfor%}

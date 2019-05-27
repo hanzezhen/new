@@ -44,11 +44,13 @@ def foradmin(request):
     # if str(user) == "AnonymousUser":
         return HttpResponseRedirect('/admin/login/')
     else:
-        newstudents=student.objects.filter(isshenhe=False)
-        number=len(newstudents)
-        print("number:",number)
+        newstudents=student.objects.filter(Q(isshenhe=False),Q(isstudent=True))
+        number1=len(newstudents)
+        newzuwairenyuan=student.objects.filter(Q(isshenhe=False),Q(isstudent=False))
+        number2=len(newzuwairenyuan)
+        print("number:",number1)
         # number1=5
-        return render(request,'foradmin.html',{"number1":number})
+        return render(request,'foradmin.html',{"number1":number1,"number2":number2})
 
 
 def studentquanxian(request):
@@ -56,7 +58,7 @@ def studentquanxian(request):
     print("ID:",queryname)
 
     # newstudents = student.objects.filter(Q(sname__icontains=queryname))
-    newstudents = student.objects.filter(Q(sname__icontains=queryname),Q(isshenhe=False))
+    newstudents = student.objects.filter(Q(sname__icontains=queryname),Q(isshenhe=False),Q(isstudent=True))
     print("newstudents:",newstudents)
     print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
 
@@ -65,21 +67,30 @@ def studentquanxian(request):
     equipments = equipment.objects.all()
     return render(request,'studentquanxian.html',{"queryname":queryname,"students":newstudents,"equipments":equipments})
 
-def studentshenqing(request):
-    return render(request,"studentshenqing.html")
-
 
 def xiaowaishenqing(request):
-    return render(request,"xiaowaishenqing.html")
+    queryname = request.GET.get('q', default='')
+    print("ID:", queryname)
+
+    # newstudents = student.objects.filter(Q(sname__icontains=queryname))
+    newstudents = student.objects.filter(Q(sname__icontains=queryname), Q(isshenhe=False), Q(isstudent=False))
+    print("newstudents:", newstudents)
+
+
+    equipments = equipment.objects.all()
+    return render(request, 'xiaowaishenqing.html',
+                  {"queryname": queryname, "students": newstudents, "equipments": equipments})
+
+
+
+
+
 
 def studentupdate(request):
     return render(request,"studentupdate.html")
 
-
 def administerupdate(request):
     return render(request,"administerupdate.html")
-
-
 
 def shenhe(request):
 

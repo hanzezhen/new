@@ -23,7 +23,7 @@ class student(models.Model):
         verbose_name = '学生'
         verbose_name_plural = '学生'
     spk=models.AutoField('编号',primary_key=True)
-    sid=models.CharField('学号',max_length=30,unique=True)
+    sid=models.CharField('用户名',max_length=30,unique=True)
     sname=models.CharField('姓名',max_length=20)
     steacher=models.ForeignKey(teacher,verbose_name='老师',on_delete=models.PROTECT)#是否使用级联删除，修改老师时，不要删除老师,修改老师
 
@@ -35,6 +35,7 @@ class student(models.Model):
     password =models.CharField('密码',max_length=50)
     time_use=models.DecimalField('用时',max_digits=10,decimal_places=1,default=0.0)
     istongguo=models.BooleanField('审核通过',default=False)
+    isstudent=models.BooleanField('是否组内',default=True)
     def __str__(self):
         return self.sname
 
@@ -46,6 +47,8 @@ class equipment(models.Model):
     eid=models.AutoField('编号',primary_key=True)
     ename=models.CharField('设备名',max_length=50)
     eshiyanshi=models.CharField('实验室',max_length=50)
+    eguanliyuan=models.CharField('管理人',max_length=50)
+    ezhuangtai=models.CharField("状态",max_length=20)
     exianshi=models.DecimalField("限时",max_digits=10,decimal_places=1,default=100.0)
     ejieshao1=models.CharField("介绍第一段",max_length=500,blank=True)
     ejieshao2=models.CharField("介绍第二段",max_length=500,blank=True)
@@ -112,6 +115,11 @@ class xitongxinxi(models.Model):
     quxiaoyuyue=models.IntegerField('取消预约提前',default=1)
     def __str__(self):
         return str("系统信息只能修改不能添加")
+
+
+
+
+
 
 
 

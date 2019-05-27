@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/booksystem.iml" filepath="$PROJECT_DIR$/.idea/booksystem.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../new-master/.idea/makaiquan_booksystem-master.iml" filepath="$PROJECT_DIR$/../../new-master/.idea/makaiquan_booksystem-master.iml" />
     </modules>
   </component>
 </project>

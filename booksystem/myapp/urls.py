@@ -1,11 +1,11 @@
 from django.conf.urls import include, url
-from . import views,form,tests,hanzezhen_url
+from . import views,form,tests,hanzezhen_url,makaiquan
 urlpatterns = [
 
     url(r'^signpass/$',views.signpass,name='signpass'),
     url(r'^foradmin/$',views.foradmin,name='formadmin'),
     url(r'^studentquanxian/$',views.studentquanxian,name='studentquanxian'),
-    url(r'^studentshenqing/$',views.studentshenqing,name='studentshenqing'),
+
     url(r'^xiaowaishenqing/$',views.xiaowaishenqing,name='xiaowaishenqing'),
     url(r'^studentupdate/$',views.studentupdate,name='studentupdate'),
     url(r'^weekform/$',views.weekform,name='weekform'),
@@ -16,6 +16,17 @@ urlpatterns = [
     url(r'^studentform/$',views.studentform,name='studentform'),
     url(r'^teacherform/$',views.teacherform,name='teacherform'),
 
+
+
+    url(r'^studentshenqing/$',makaiquan.studentshenqing,name='studentshenqing'),
+    url(r'^stusqupdateepi/$',makaiquan.stusqupdateepi,name='stusqupdateepi'),
+    url(r'^chongxinfenpei1/$',makaiquan.chongxinfenpei1,name='chongxinfenpei1'),
+    url(r'^chongxinfenpei2/$',makaiquan.chongxinfenpei2,name='chongxinfenpei2'),
+    url(r'^tianjia1/$',makaiquan.tianjia1,name='tianjia1'),
+    url(r'^tianjia2/$',makaiquan.tianjia2,name='tianjia2'),
+    url(r'^shanchu1/$',makaiquan.shanchu1,name='shanchu1'),
+    url(r'^shanchu2/$',makaiquan.shanchu2,name='shanchu2'),
+    url(r'^xiaowaitongguo/$',makaiquan.xiaowaitongguo,name='xiaowaitongguo'),
 
 
 

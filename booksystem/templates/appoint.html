@@ -86,9 +86,9 @@
                     </div>
                     <div style="display: inline-block ;width:50%">
                         <ul>
-                            <li>设备名称：脑电帽</li>
-                            <li>设备编号：001</li>
-                            <li>设备地点：A220</li>
+                            <li>设备名称：{{epq.ename}}</li>
+                            <li>设备编号：{{epq.eid}}</li>
+                            <li>设备地点：{{epq.eshiyanshi}}</li>
                             <li>设备负责人：韩泽祯</li>
                             <li>设备状态：<a style="color:red;">维修中</a></li>
                         </ul>
@@ -103,26 +103,36 @@
                         实验设备预约
                 </div>
                 <table border="1">
-            <tr>
-                <th>时间\日期</th>
-                {% for item in date1 %}
-                    <th>
-                    {{ item }}
-                    </th>
-                {% endfor %}
-            </tr>
-            {% for ais in s %}
-            <tr>
-                <td>{{ ais|add:7 }}:00-{{ ais|add:8 }}:00</td>
-                {% for i in t %}
-                    <td>
-                        <button>点击预约</button>
-                    </td>
-                {% endfor %}
-            </tr>
-            {% endfor %}
+                    <tr>
+                        <th>时间\日期</th>
+                        {% for item in date1 %}
+                        <th>
+                            {{ item }}
+                        </th>
+                        {% endfor %}
+                    </tr>
 
-        </table>
+
+                    {% for ais in s %}
+                    <tr>
+                        <td>{{ ais|add:7 }}:00-{{ ais|add:8 }}:00</td>
+                        {% for i in t %}
+                            {% if not yueli1.ais.t == 0 %}
+                            <td>
+                                {{ yueli1.t.ais }}
+                            </td>
+                            {% else %}
+                            <td>
+                                <button>点击预约</button>
+                            </td>
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+
+                </table>
+
+
                 <style>
                         table{
                             border-collapse: collapse;
