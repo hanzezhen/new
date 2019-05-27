@@ -12,6 +12,7 @@ def register(req):
     })
 
 
+
 def zhucechenggong(request):
     name = request.POST.get('sname')
     sid = request.POST.get('sid')

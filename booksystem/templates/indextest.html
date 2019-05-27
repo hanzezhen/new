@@ -102,10 +102,10 @@
 
                         {% for item in ep %}
                         <tr>
-                            <td>{{item.time}}</td>
-                            <td>{{ item.name}}</td>
-                            <td>{{ item.place}}</td>
-                            <td>{{ item.person}}</td>
+                            <td>{{item.ydate}}</td>
+                            <td>{{item.yeid.ename}}</td>
+                            <td>{{item.yeid.eshiyanshi}}</td>
+                            <td>{{item.yeid}}</td>
                         </tr>
                         {% endfor %}
                     </table>
@@ -143,9 +143,14 @@
                     <div class="polaroid">
                         <img src="/static/images/1.jpg" alt="Norway" style="width:100%">
                         <div class="container">
-                            <p>{{item.name}}</p>
-                            <p style="color: lightslategrey">无权限预约</p>o
-                            <a href="/appointfalse/">点击预约</a>
+                            <p>{{item.ep}}</p>
+                            {% if item.quanxian == '1'%}
+                                <p style="color: lightslategrey">可以预约</p>
+                                <a href="/appointfalse/">点击预约</a>
+                            {% endif %}
+                            {% if not item.quanxian == '1'%}
+                                <p style="color: red">无权限预约</p>
+                            {% endif %}
                         </div>
                     </div>
                 {% endfor%}
