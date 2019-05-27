@@ -38,6 +38,8 @@ urlpatterns = [
     url(r'^traceback', views.traceback),
     url(r'^signup', views.signup),
     url(r'^ajax1get/', form.ajax1get),
+    url(r'^ajax2get/', form.ajax2get),
+
     url(r'^test11/', tests.test11),
     url(r'^index/', tests.index),
     url(r'^indextest/', tests.indextest),

@@ -189,9 +189,14 @@ def appoint(request,num1):
     give =giveout(yueli)
     chuandi =[]
     for gi in give:
+        print(gi)
         aa=list(gi)
         chuandi.append(aa)
-    return render(request,'appoint.html',{'t':stimelist,'s':rangelist,'date1':datelist,'epq':ep,'yueli1':chuandi
+
+    return render(request,'appoint.html',{'t':stimelist,'s':rangelist,'date1':datelist,'epq':ep,'yueli1':chuandi[6],
+                                          'yueli2': chuandi[7],'yueli3':chuandi[8],'yueli4':chuandi[9],'yueli5':chuandi[10],'yueli6':chuandi[11],'yueli7':chuandi[12],
+                                          'yueli8': chuandi[13],'yueli9':chuandi[14],'yueli10':chuandi[15],'yueli11':chuandi[16],'yueli12':chuandi[17],'yueli13':chuandi[18],
+                                          'yueli14': chuandi[19],'yueli15':chuandi[20],'yueli16':chuandi[21],'yueli17':chuandi[22],
                                           })
 
 def appointfalse(request):

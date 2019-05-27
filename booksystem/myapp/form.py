@@ -14,4 +14,8 @@ def ajax1get(request):
     print(ret)
     return HttpResponse(json.dumps(ret))
 
+def ajax2get(request):
+
+    return HttpResponse('成功')
+
 
