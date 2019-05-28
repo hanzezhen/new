@@ -71,9 +71,9 @@
                 </ul>
             </div>
         </div>
-        <div class="mmain">
+        <div class="mmain" >
 
-            <div class="mm-information">
+            <div class="mm-information" style="overflow: scroll;height: 50%">
                 <div class="mm-information-title">
                     <i class="fa fa-id-card-o" aria-hidden="true"></i>
                         我的预约
@@ -89,15 +89,51 @@
                     </tr>
                     {% for item in ep1 %}
                     <tr>
-                        <td>{{item.ydate}}</td>
+                        <td>{{item.ydate}}&nbsp;{{item.ytimestart}}</td>
                         <td>{{item.yeid.ename}}</td>
                         <td>{{item.yeid.eshiyanshi}}</td>
-                        <td><p style="color: red">{{item.yeid.ejieshaoyi}}</p></td>
-                        <td><p style="color: red">{{item.yeid.ejieshaoyi}}</p></td>
+                        <td>{{item.yeid.eguanliyuan}}</td>
+                        <td><p style="color: red">{{item.yeid.ezhuangtai}}</p></td>
 
-                        <td><button>申请取消</button></td>
+                        <td><button id="{{item.ydate}}and{{item.ytimestart}}">申请取消</button></td>
                     </tr>
                     {% endfor %}
+                    <script>
+                        $(document).ready(function () {
+                            $(":button").click(function () {
+                                var a = $(this).attr('id');
+                                $.ajax({
+                                    url: '/ajax3get/',
+                                    type: 'POST',
+                                    contentType: 'application/json',
+                                    data: JSON.stringify({
+                                        'username': a
+                                    }),
+                                    headers: {'X-CSRFToken': $('[name="csrfmiddlewaretoken"]').val()},
+                                    success: function (data) {
+                                        var dataObj = JSON.parse(data);
+                                        if (dataObj['sttr'] == 'yes') {
+                                            alert('已经取消');
+                                            $("#" + a).hide();
+                                            var link = $('<p style="background-color: yellow;color: red">已经取消</p>');
+                                            $("#" + a).after(link)
+                                        }
+                                        else if (dataObj['sttr'] == 'no'){
+                                            alert('操作有误，请重新操作');
+                                            window.location.reload();
+                                        }
+                                    },
+                                        error: function () {
+                                            alert('取消失败，请重新操作');
+                                            window.location.reload();
+                                        }
+
+                                })
+
+                            })
+                        })
+
+                    </script>
                 </table>
                 <style>
                         table{
@@ -121,7 +157,7 @@
                     </style>
 
             </div>
-            <div class="mm-information">
+            <div class="mm-information" style="overflow: scroll;height: 50%">
                 <div class="mm-information-title">
                     <i class="fa fa-id-card-o" aria-hidden="true"></i>
                         历史预约

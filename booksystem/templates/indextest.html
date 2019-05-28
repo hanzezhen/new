@@ -102,10 +102,10 @@
 
                         {% for item in ep %}
                         <tr>
-                            <td>{{item.ydate}}</td>
+                            <td>{{item.ydate}}&nbsp;{{item.ytimestart}}</td>
                             <td>{{item.yeid.ename}}</td>
                             <td>{{item.yeid.eshiyanshi}}</td>
-                            <td>{{item.yeid}}</td>
+                            <td>{{item.eguanliyuan}}</td>
                         </tr>
                         {% endfor %}
                     </table>
@@ -146,7 +146,7 @@
                             <p>{{item.ep}}</p>
                             {% if item.quanxian == '1'%}
                                 <p style="color: lightslategrey">可以预约</p>
-                                <a href="/appointfalse/">点击预约</a>
+                                <a href="/appoint{{item.id}}/">点击预约</a>
                             {% endif %}
                             {% if not item.quanxian == '1'%}
                                 <p style="color: red">无权限预约</p>

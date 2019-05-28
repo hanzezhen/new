@@ -39,6 +39,7 @@ urlpatterns = [
     url(r'^signup', views.signup),
     url(r'^ajax1get/', form.ajax1get),
     url(r'^ajax2get/', form.ajax2get),
+    url(r'^ajax3get/', form.ajax3get),
 
     url(r'^test11/', tests.test11),
     url(r'^index/', tests.index),

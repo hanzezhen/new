@@ -41,4 +41,25 @@ def ajax2get(request):
     print(ret)
     return HttpResponse(json.dumps(ret))
 
+def ajax3get(request):
+    uname = json.loads(request.body.decode())
+    stu = uname['username']
+    nianyueri = re.compile(r'^(.+?)and')
+    time2 =re.compile(r'and(.+?)$')
+    nianyue= re.search(nianyueri,stu).group(1)
+    shijian = re.search(time2,stu).group(1)
+    print(nianyue)
+    print(shijian)
+    ydate=datetime.datetime.strptime(nianyue, "%Y年%m月%d日")
+    ytimestart =shijian
+    ko = yuyue.objects.filter(ydate=ydate).filter(ytimestart=ytimestart)
+    try:
+        ko[0]
+        ret = {"sttr": "yes"}
+    except:
+        ret = {"sttr": "no"}
+
+    return HttpResponse(json.dumps(ret))
+
+
 

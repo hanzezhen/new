@@ -39,6 +39,8 @@ from collections import Counter
 class s():
     def __init__(self,ep,num):
         self.ep = ep
+        llc = equipment.objects.filter(ename=ep)[0]
+        self.id = llc.eid
         if num == '1':
             self.quanxian ='1'
         else:
@@ -54,7 +56,6 @@ def indextest(req):
             lis.append(stu1[i].yeid.ename)
     result = Counter(lis)
     eplist = []
-
     for key,value in result.items():
         if len(eplist)<5:
             eplist.append(key)
@@ -65,19 +66,19 @@ def indextest(req):
         if quanxian.objects.filter(qsid=stu).filter(qeid=epp):
             eelist.append('1')
         else:eelist.append('0')
-    print('查找的最近预约设备权限如下：',eelist)
+    # print('查找的最近预约设备权限如下：',eelist)
     fl=[]
     for i in range(len(eelist)):
         try:
             fl.append(s(eplist[i],eelist[i]))
-            print(s(eplist[i],eelist[i]).quanxian)
+            # print(s(eplist[i],eelist[i]).quanxian)
         except: return None
     elist=[]
     for i in range(3):
         if stu1[i]:
             elist.append(stu1[i])
-            print(stu1[i].yeid.ename)
-    print(elist)
+            # print(stu1[i].yeid.ename)
+    # print(elist)
 
     return render(req,'indextest.html',{'ep':elist,'equip':fl,'stu':stu})
 
@@ -176,6 +177,9 @@ def appoint(request,num1):
         if b:
             for ii in b:
                 ts = ii.ytimestart
+                try:
+                    ts=ts.replace(':',"：")
+                except:print('ok')
                 st = r'([1-9]+)：'
                 p = re.compile(st)
                 sss = re.search(p, ts).group(1)
@@ -183,7 +187,6 @@ def appoint(request,num1):
                 lll=int(ii.shichang)
 
                 for i in range(lll):
-                    print(type(ii))
                     yueli[sss,kkk]=ii.ysid.sname
         kkk=kkk+1
     give =giveout(yueli)
