@@ -122,7 +122,7 @@
                     </td>
                     {% else %}
                     <td>
-                        <button value="{{forloop.counter}}1" onclick="">点击预约</button>
+                        <button value="{{forloop.counter}}and1" onclick="">点击预约</button>
                     </td>
                     {% endif %}
                     {% endfor %}
@@ -136,7 +136,7 @@
                 </td>
                 {% else %}
                 <td>
-                    <button value="{{forloop.counter}}2" onclick="">点击预约</button>
+                    <button value="{{forloop.counter}}and2" onclick="">点击预约</button>
                 </td>
                 {% endif %}
                 {% endfor %}
@@ -150,7 +150,7 @@
                 </td>
                 {% else %}
                 <td>
-                    <button value="{{forloop.counter}}3" onclick="">点击预约</button>
+                    <button value="{{forloop.counter}}and3" onclick="">点击预约</button>
                 </td>
                 {% endif %}
                 {% endfor %}
@@ -164,7 +164,7 @@
                 </td>
                 {% else %}
                 <td>
-                    <button value="{{forloop.counter}}4" onclick="">点击预约</button>
+                    <button value="{{forloop.counter}}and4" onclick="">点击预约</button>
                 </td>
                 {% endif %}
                 {% endfor %}
@@ -178,7 +178,7 @@
                 </td>
                 {% else %}
                 <td>
-                    <button value="{{forloop.counter}}5" onclick="">点击预约</button>
+                    <button value="{{forloop.counter}}and5" onclick="">点击预约</button>
                 </td>
                 {% endif %}
                 {% endfor %}
@@ -192,7 +192,7 @@
                 </td>
                 {% else %}
                 <td>
-                    <button value="{{forloop.counter}}6" onclick="">点击预约</button>
+                    <button value="{{forloop.counter}}and6" onclick="">点击预约</button>
                 </td>
                 {% endif %}
                 {% endfor %}
@@ -206,7 +206,7 @@
                 </td>
                 {% else %}
                 <td>
-                    <button value="{{forloop.counter}}7" onclick="">点击预约</button>
+                    <button value="{{forloop.counter}}and7" onclick="">点击预约</button>
                 </td>
                 {% endif %}
                 {% endfor %}
@@ -220,7 +220,7 @@
                 </td>
                 {% else %}
                 <td>
-                    <button value="{{forloop.counter}}8" onclick="">点击预约</button>
+                    <button value="{{forloop.counter}}and8" onclick="">点击预约</button>
                 </td>
                 {% endif %}
                 {% endfor %}
@@ -234,7 +234,7 @@
                 </td>
                 {% else %}
                 <td>
-                    <button value="{{forloop.counter}}9" onclick="">点击预约</button>
+                    <button value="{{forloop.counter}}and9" onclick="">点击预约</button>
                 </td>
                 {% endif %}
                 {% endfor %}
@@ -248,7 +248,7 @@
                 </td>
                 {% else %}
                 <td>
-                    <button value="{{forloop.counter}}10" onclick="">点击预约</button>
+                    <button value="{{forloop.counter}}and10" onclick="">点击预约</button>
                 </td>
                 {% endif %}
                 {% endfor %}
@@ -262,7 +262,7 @@
                 </td>
                 {% else %}
                 <td>
-                    <button value="{{forloop.counter}}11" onclick="">点击预约</button>
+                    <button value="{{forloop.counter}}and11" onclick="">点击预约</button>
                 </td>
                 {% endif %}
                 {% endfor %}
@@ -276,7 +276,7 @@
                 </td>
                 {% else %}
                 <td>
-                    <button value="{{forloop.counter}}12" onclick="">点击预约</button>
+                    <button value="{{forloop.counter}}and12" onclick="">点击预约</button>
                 </td>
                 {% endif %}
                 {% endfor %}
@@ -290,7 +290,7 @@
                 </td>
                 {% else %}
                 <td>
-                    <button value="{{forloop.counter}}13" onclick="">点击预约</button>
+                    <button value="{{forloop.counter}}and13" onclick="">点击预约</button>
                 </td>
                 {% endif %}
                 {% endfor %}
@@ -304,12 +304,13 @@
                 </td>
                 {% else %}
                 <td>
-                    <button value="{{forloop.counter}}14" onclick="">点击预约</button>
+                    <button value="{{forloop.counter}}and14" onclick="">点击预约</button>
                 </td>
                 {% endif %}
                 {% endfor %}
 
                 </tr>
+
 
                 <style>
 
@@ -323,20 +324,40 @@
             <script>
                 $(document).ready(function () {
                     $(":button").click(function () {
-                        var val=$(this).attr("value")
-                        alert(val)
+                        var val=$(this).attr("value");
+                        $(this).attr("id",val);
+                        var val2=$(this).attr("id");
+                        var a = $("#a123").attr("value");
+                        var b = $("#b123").attr("value");
                         $.ajax({
                             url: '/ajax2get/',
                             type: 'POST',
                             contentType: 'application/json',
                             data: JSON.stringify({
-                                'username': '0'
+                                'username': a,
+                                'val': val,
+                                'eid':b,
                             }),
                             headers: {'X-CSRFToken': $('[name="csrfmiddlewaretoken"]').val()},
 
                             success: function (data) {
+                                var dataObj = JSON.parse(data);
+                                if (dataObj['sttr'] == 'yes') {
+                                    $("#"+val2).hide();
+                                    var link = $('<p style="background-color: yellow">'+a+'</p>')
+                                    $("#"+val2).after(link)
+                                    alert('预约成功');
 
-                                alert('预约成功')
+                                }
+                                else if (dataObj['sttr'] == 'no'){
+                                    alert('已经被预约，请刷新后再试')
+                                }
+
+
+
+                            },
+                            error: function(){
+                                alert("预约失败，请重启后再试！")
                             }
 
 
@@ -390,6 +411,9 @@
             联系人:徐老师&nbsp;联系方式:xxx-xxxxxx
         </i>
     </li>
+    <button id="a123" value="{{ username }}"></button>
+    <button id="b123" value="{{eid}}"></button>
+
 </div>
 </body>
 </html>
