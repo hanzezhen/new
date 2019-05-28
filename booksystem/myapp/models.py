@@ -82,7 +82,7 @@ class yuyue(models.Model):
     yeid=models.ForeignKey(equipment,on_delete=models.PROTECT)
     ydate=models.DateField('预约日期')
 
-
+    isquxiao = models.BooleanField('取消',default=False)
     ytimestart=models.CharField('开始时间',max_length=30)
     shichang=models.DecimalField('时长',max_digits=5,decimal_places=1)
     yuyuebeizhu=models.CharField("备注",max_length=200,blank=True)

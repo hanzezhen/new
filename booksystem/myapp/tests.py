@@ -4,6 +4,7 @@ from django.test import TestCase
 from .models import student,teacher,yuyue
 from django.shortcuts import render
 from django.http import HttpResponse
+from .views import checklogin
 
 def addteacher(request):
     return render(request,'addStudents.html')
@@ -46,6 +47,8 @@ class s():
         else:
             self.quanxian = False
 from .models import quanxian,equipment
+
+@checklogin
 def indextest(req):
     name = req.session.get('username')
     stu = student.objects.filter(sname=name)[0]
@@ -59,7 +62,7 @@ def indextest(req):
     for key,value in result.items():
         if len(eplist)<5:
             eplist.append(key)
-    print('查找的最近预约设备如下：',eplist)
+    # print('查找的最近预约设备如下：',eplist)
     eelist=[]
     for item in eplist:
         epp = equipment.objects.filter(ename=item)[0]
@@ -86,7 +89,12 @@ def indextest(req):
 def baseinfo(request):
     name = request.session.get('username')
     stu = student.objects.filter(sname=name)
-    return render(request,'baseinfo.html',{'stu':stu[0]})
+    ep = quanxian.objects.filter(qsid=stu[0])
+    st = ''
+    for i in ep:
+        st = st+i.qeid.ename+'|'
+    print(st)
+    return render(request,'baseinfo.html',{'stu':stu[0],'quanxian':st})
 
 
 class ep2():
@@ -97,7 +105,7 @@ class ep2():
             return self.yuyue[item]
         except : return item
 
-
+@checklogin
 def myappointment(request):
     name = request.session.get('username')
     stu = student.objects.filter(sname=name)[0]
@@ -114,13 +122,13 @@ def myappointment(request):
             if datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") < (
                     item.ydate.strftime("%Y-%m-%d") + ' ' + item.ytimestart):
                 yuyuel.append(item)
-                print('当前时间',datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-                print('预约时间',item.ydate.strftime("%Y-%m-%d") + ' ' + item.ytimestart)
+                # print('当前时间',datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+                # print('预约时间',item.ydate.strftime("%Y-%m-%d") + ' ' + item.ytimestart)
             elif datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") > (
                     item.ydate.strftime("%Y-%m-%d") + ' ' + item.ytimestart):
                 lishil.append(item)
-    print('历史预约：',lishil)
-    print('当前预约：',yuyuel)
+    # print('历史预约：',lishil)
+    # print('当前预约：',yuyuel)
     return render(request,'myappointment.html',{'ep1':yuyuel,'ep2':lishil})
 
 class equi_p:
@@ -134,7 +142,7 @@ class equi_p:
         self.name = ep.ename
 
 
-
+@checklogin
 def epappoint(request):
     name = request.session.get('username')
     stu = student.objects.filter(sname=name)[0]
@@ -159,7 +167,7 @@ class giveout():
     def __getitem__(self, item):
         return list(self.matrix[item,:])
 
-
+@checklogin
 def appoint(request,num1):
     name = request.session.get('username')
     stu = student.objects.filter(sname=name)[0]
@@ -192,7 +200,7 @@ def appoint(request,num1):
     give =giveout(yueli)
     chuandi =[]
     for gi in give:
-        print(gi)
+        # print(gi)
         aa=list(gi)
         chuandi.append(aa)
 
@@ -201,7 +209,7 @@ def appoint(request,num1):
                                           'yueli8': chuandi[13],'yueli9':chuandi[14],'yueli10':chuandi[15],'yueli11':chuandi[16],'yueli12':chuandi[17],'yueli13':chuandi[18],
                                           'yueli14': chuandi[19],'yueli15':chuandi[20],'yueli16':chuandi[21],'yueli17':chuandi[22],
                                           'eid':num1,'username':name})
-
+@checklogin
 def appointfalse(request):
     return render(request,'appintfalse.html')
 

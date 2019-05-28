@@ -44,17 +44,23 @@ def ajax2get(request):
 def ajax3get(request):
     uname = json.loads(request.body.decode())
     stu = uname['username']
-    nianyueri = re.compile(r'^(.+?)and')
+    nianyueri = re.compile(r'^(.+?)an')
     time2 =re.compile(r'and(.+?)$')
     nianyue= re.search(nianyueri,stu).group(1)
     shijian = re.search(time2,stu).group(1)
-    print(nianyue)
-    print(shijian)
+    # print(nianyue)
+    # print(shijian)
+    ename = re.search(r'an(.+?)and',stu).group(1)
+    # print(ename)
+    eid = equipment.objects.filter(ename = ename)[0]
     ydate=datetime.datetime.strptime(nianyue, "%Y年%m月%d日")
     ytimestart =shijian
-    ko = yuyue.objects.filter(ydate=ydate).filter(ytimestart=ytimestart)
+    ko = yuyue.objects.filter(ydate=ydate).filter(ytimestart=ytimestart).filter(yeid=eid)[0]
+    # print('你要的',ko)
     try:
-        ko[0]
+        ko.isquxiao=True
+        ko.save()
+        print(ko.isquxiao)
         ret = {"sttr": "yes"}
     except:
         ret = {"sttr": "no"}

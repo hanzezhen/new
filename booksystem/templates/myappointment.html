@@ -93,9 +93,12 @@
                         <td>{{item.yeid.ename}}</td>
                         <td>{{item.yeid.eshiyanshi}}</td>
                         <td>{{item.yeid.eguanliyuan}}</td>
-                        <td><p style="color: red">{{item.yeid.ezhuangtai}}</p></td>
-
-                        <td><button id="{{item.ydate}}and{{item.ytimestart}}">申请取消</button></td>
+                        <td><p style="color: green">{{item.yeid.ezhuangtai}}</p></td>
+                        {% if item.isquxiao == False %}
+                        <td><button id="{{item.ydate}}an{{item.yeid.ename}}and{{item.ytimestart}}">申请取消</button></td>
+                        {% else %}
+                        <td style="color: red;background-color: yellow">已经取消</td>
+                        {% endif %}
                     </tr>
                     {% endfor %}
                     <script>
@@ -107,7 +110,7 @@
                                     type: 'POST',
                                     contentType: 'application/json',
                                     data: JSON.stringify({
-                                        'username': a
+                                        'username': a,
                                     }),
                                     headers: {'X-CSRFToken': $('[name="csrfmiddlewaretoken"]').val()},
                                     success: function (data) {
@@ -176,8 +179,12 @@
                         <td>{{item.ydate}} {{item.ytimestart}} </td>
                         <td>{{item.yeid.ename}}</td>
                         <td>{{item.yeid.eshiyanshi}}</td>
-                        <td><p style="color: red">{{item.yeid.ejieshaoyi}}</p></td>
-                        <td><button>申请取消</button></td>
+                        <td>{{item.yeid.eguanliyuan}}</td>
+                        {% if item.isqiandao == True %}
+                        <td style="color: red">您已违约</td>
+                        {% elif item.isqiandao == False %}
+                        <td>正常</td>
+                        {% endif %}
                     </tr>
                     {% endfor %}
                 </table>

@@ -343,6 +343,16 @@ def hometrans(request):
     upasswrd = request.POST.get('password', None)
 
     stu = student.objects.filter(sid=uname,password=upasswrd)
+    try:
+        a = yuyue.objects.all()
+        for i in a:
+            a=i.ytimestart.replace(':', '：')
+            i.ytimestart=a
+            i.save()
+            # print(i.ytimestart)
+    except:
+        print('None')
+
 
     if stu:
         request.session['is_login'] = '1'

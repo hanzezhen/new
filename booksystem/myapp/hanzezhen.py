@@ -1,6 +1,8 @@
 from .models import student,teacher
 from django.shortcuts import render
 from django.http import HttpResponse
+from .views import checklogin
+
 
 def register(req):
     teacherlist = []

@@ -105,7 +105,7 @@
                             <td>{{item.ydate}}&nbsp;{{item.ytimestart}}</td>
                             <td>{{item.yeid.ename}}</td>
                             <td>{{item.yeid.eshiyanshi}}</td>
-                            <td>{{item.eguanliyuan}}</td>
+                            <td>{{item.yeid.eguanliyuan}}</td>
                         </tr>
                         {% endfor %}
                     </table>
@@ -150,6 +150,8 @@
                             {% endif %}
                             {% if not item.quanxian == '1'%}
                                 <p style="color: red">无权限预约</p>
+                                <p style="color: red">请联系管理员</p>
+
                             {% endif %}
                         </div>
                     </div>
