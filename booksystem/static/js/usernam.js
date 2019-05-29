@@ -1,9 +1,9 @@
 $(document).ready(function () {
-    $('#uname').focusout(function () {
+    $('#sid').focusout(function () {
 
-        var a = $.trim($('#uname').val());
+        var a = $.trim($('#sid').val());
         if (a == '') {
-            $('#che').text('请输入用户名')
+            $('#che').text('请输入学号')
         }
         else {
             $.ajax({
@@ -18,11 +18,11 @@ $(document).ready(function () {
                     success: function (data) {
                         var dataObj = JSON.parse(data);
                         if (dataObj['sttr'] == 'yes') {
-                            $('#che').text('用户名已存在,请重新输入!');
-                            $('#uname').val('')
+                            $('#che').text('此学号已存在,请重新输入!');
+                            $('#sid').val('')
                         }
                         else if (dataObj['sttr'] == 'no') {
-                            $('#che').text('用户名可以使用!');
+                            $('#che').text('此学号可以使用!');
                         }
                     }
                 }
@@ -31,7 +31,7 @@ $(document).ready(function () {
         }
     })
 
-    $('#uname').focus(function () {
+    $('#sid').focus(function () {
         $('#che').text('')
     })
 })

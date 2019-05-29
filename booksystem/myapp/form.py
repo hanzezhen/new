@@ -6,7 +6,7 @@ from .models import student,teacher,yuyue,equipment
 
 def ajax1get(request):
     uname = json.loads(request.body.decode())
-    stu = student.objects.filter(sname=uname['username'])
+    stu = student.objects.filter(sid=uname['username'])
 
     if stu :
         ret = {"sttr":"yes"}

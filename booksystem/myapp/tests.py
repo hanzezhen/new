@@ -119,7 +119,7 @@ def indextest(req):
         item.jieshushijian = xx
         item.save()
         try:
-            # print(a[4])
+            print(a[4])
             a = a.replace('：', '')
             # print(a)
         except:
@@ -130,31 +130,37 @@ def indextest(req):
 
         # print(item.jieshushijian)
         # print(xx)
-        if datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S") < (
+        if datetime.datetime.now().strftime("%Y-%m-%d-%H%M") < (
                 item.ydate.strftime("%Y-%m-%d") + '-' + a):
             # print(item.ydate.strftime("%Y-%m-%d") + '-' +a)
+            print(item.ydate.strftime("%Y-%m-%d") + '-' + a)
+            print(datetime.datetime.now().strftime("%Y-%m-%d-%H%M"))
             item.qiandaoshijian = False
-            if datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S") > (
+            if datetime.datetime.now().strftime("%Y-%m-%d-%H%M") > (
                     item.ydate.strftime("%Y-%m-%d") + '-' + yy):
                 item.qiandaoshijian = True
+
+                yuyuel.append(item)
             item.save()
-            yuyuel.append(item)
+
             # print('当前时间',datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
             # print('预约时间',item.ydate.strftime("%Y-%m-%d") + ' ' + item.ytimestart)
-        elif datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S") > (
+        elif datetime.datetime.now().strftime("%Y-%m-%d-%H%M") > (
                 item.ydate.strftime("%Y-%m-%d") + '-' + a):
-            if datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S") < (
+            if datetime.datetime.now().strftime("%Y-%m-%d-%H%M") < (
                     item.ydate.strftime("%Y-%m-%d") + '-' + xx):
                 # print(item.yeid)
                 item.qiandaoshijian = True
                 item.save()
                 yuyuel.append(item)
+
             else:
                 item.qiandaoshijian = False
 
                 lishil.append(item)
     k=len(yuyuel)
-    print('cishu',k)
+    for item in yuyuel:
+        print(item.ytimestart)
     return render(req,'indextest.html',{'ep':elist,'equip':fl,'stu':stu,'kk':k})
 
 
@@ -334,6 +340,18 @@ def appoint(request,num1):
         # print(gi)
         aa=list(gi)
         chuandi.append(aa)
+    print(chuandi[7])
+
+    if stu.isstudent == False:
+        ra = 0
+        for i in datelist:
+            mp5 =  datetime.datetime.strptime(i,"%Y-%m-%d")
+            xman = mp5.strftime('%A')
+
+            if (xman != 'Sunday') and (xman != 'Saturday') :
+                for item in chuandi:
+                    item[ra] = '组外人员周内不可预约'
+            ra = ra + 1
 
     return render(request,'appoint.html',{'t':stimelist,'s':rangelist,'date1':datelist,'epq':ep,'yueli1':chuandi[6],
                                           'yueli2': chuandi[7],'yueli3':chuandi[8],'yueli4':chuandi[9],'yueli5':chuandi[10],'yueli6':chuandi[11],'yueli7':chuandi[12],
