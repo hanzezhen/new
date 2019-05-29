@@ -100,6 +100,8 @@ def baseinfo(request):
 class ep2():
     def __init__(self,stu):
         self.yuyue = yuyue.objects.filter(ysid=stu).order_by('-ydate')
+        for i in self.yuyue:
+            print('1',i.yeid)
     def __getitem__(self, item):
         try:
             return self.yuyue[item]
@@ -113,20 +115,49 @@ def myappointment(request):
     i=0
     kl=[]
     while type(stu1[i]) != type(1):
+        # print('2',stu1[i].yeid.ename)
         kl.append(stu1[i])
         i=i+1
+
     yuyuel=[]
     lishil=[]
     for item in kl:
-        if item != 1:
-            if datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") < (
-                    item.ydate.strftime("%Y-%m-%d") + ' ' + item.ytimestart):
+        # print('e',item.yeid.ename)
+        a = item.ytimestart
+        # print(a)
+        b = item.shichang
+        x = re.search(r'([0-9])：', a).group(1)
+        x = str(int(int(x) + b)) + 'm'
+        xx = re.sub(r'([0-9])：', x, a)
+        xx = xx.replace('m', '：')
+        item.jieshushijian = xx
+        item.save()
+        a=a.replace('：','')
+        xx=xx.replace('：','')
+
+        # print(item.jieshushijian)
+        # print(xx)
+        if datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S") < (
+                item.ydate.strftime("%Y-%m-%d") + '-' + a):
+            print(item.ydate.strftime("%Y-%m-%d") + '-' +a)
+            item.qiandaoshijian=False
+            item.save()
+            yuyuel.append(item)
+            # print('当前时间',datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+            # print('预约时间',item.ydate.strftime("%Y-%m-%d") + ' ' + item.ytimestart)
+        elif datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S") > (
+                item.ydate.strftime("%Y-%m-%d") + '-' + a):
+            if datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S") < (
+                    item.ydate.strftime("%Y-%m-%d") + '-' + xx):
+                print(item.yeid)
+                item.qiandaoshijian = True
+                item.save()
                 yuyuel.append(item)
-                # print('当前时间',datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-                # print('预约时间',item.ydate.strftime("%Y-%m-%d") + ' ' + item.ytimestart)
-            elif datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") > (
-                    item.ydate.strftime("%Y-%m-%d") + ' ' + item.ytimestart):
+            else:
+                item.qiandaoshijian = False
+                item.save()
                 lishil.append(item)
+
     # print('历史预约：',lishil)
     # print('当前预约：',yuyuel)
     return render(request,'myappointment.html',{'ep1':yuyuel,'ep2':lishil})

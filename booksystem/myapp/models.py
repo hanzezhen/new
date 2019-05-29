@@ -78,10 +78,10 @@ class yuyue(models.Model):
         verbose_name = '预约'
         verbose_name_plural = '预约'
     ysid=models.ForeignKey(student,limit_choices_to={'istongguo':True},on_delete=models.PROTECT)
-
+    qiandaoshijian = models.BooleanField('签到时间',default=False)
     yeid=models.ForeignKey(equipment,on_delete=models.PROTECT)
     ydate=models.DateField('预约日期')
-
+    jieshushijian = models.CharField('结束时间',max_length=30,default='a')
     isquxiao = models.BooleanField('取消',default=False)
     ytimestart=models.CharField('开始时间',max_length=30)
     shichang=models.DecimalField('时长',max_digits=5,decimal_places=1)
