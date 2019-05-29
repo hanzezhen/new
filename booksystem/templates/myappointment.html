@@ -7,9 +7,10 @@
 
     <script src="{% static 'js/jQuery.js' %}" type="text/javascript" charset="UTF-8"></script>
     <script src="{% static 'js/baseinfo.js' %}" type="text/javascript" charset="UTF-8"></script>
-    <script src="{% static 'js/jquery-1.7.2.js' %}" type="text/javascript" charset="UTF-8"></script>
-    <script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js" type="text/javascript" charset="UTF-8"></script>
-
+    <script src="{% static 'js/jquery-ui.js' %}" type="text/javascript" charset="UTF-8"></script>
+    <link rel="stylesheet" href="{% static 'js/jquery-ui.css' %}"/>
+    <link rel="stylesheet" href="{% static 'js/jquery-ui.theme.css' %}"/>
+    <link rel="stylesheet" href="{% static 'js/jquery-ui.structure.css' %}"/>
     <link rel="stylesheet" href="{% static 'css/font-awesome-4.7.0/css/font-awesome.min.css' %}"/>
     <link rel="stylesheet" href="{% static 'css/new/index.css' %}"/>
 
@@ -57,7 +58,7 @@
         <div class="m1">
             <ul>
                 <span>个人管理</span>
-                <li><a href="/baseinfo/" class="l1">
+                <li><a id='xyz1' href="/baseinfo/" class="l1">
                     <i class="fa fa-id-card-o" aria-hidden="true"></i>
                     基本信息
                 </a></li>
@@ -65,10 +66,10 @@
             </ul>
             <ul>
                 <span>预约管理</span>
-                <li><a href="#" class="l1">
+                <li><a id='xyz2' href="#" class="l1">
                     <i class="fa fa-user-circle" aria-hidden="true"></i>
                     我的预约</a></li>
-                <li><a href="/epappoint/" class="l1">
+                <li><a id='xyz3' href="/epappoint/" class="l1">
                     <i class="fa fa-calendar" aria-hidden="true"></i>
                     实验设备预约</a></li>
             </ul>
@@ -107,9 +108,13 @@
                     <td style="color: red;background-color: yellow">已经取消</td>
                     {% endif %}
                     {% if item.qiandaoshijian == True %}
-                    <td><a id="{{item.ydate}}an{{item.yeid.ename}}and{{item.ytimestart}}1" href="#"
+                    {% if item.shiyanfankui %}
+                    <td>已签到</td>
+                    {% else %}
+                    <td><a id="{{item.ydate}}an{{item.yeid.ename}}and{{item.ytimestart}}a" href="#"
                            style="color: white;background-color: #1b54b4;padding-left: 20%;padding-right: 20%">签&nbsp;&nbsp;到</a>
                     </td>
+                    {% endif %}
                     {% else %}
                     <td>当前时间不可签到</td>
                     {% endif %}
@@ -148,32 +153,85 @@
                             })
 
                         })
-                    })
-
-                    $("#dialogDiv").dialog({
-                        autoOpen: false,
-                        // 是否自动弹出窗口
-                        modal: true,    // 设置为模态对话框
-                        resizable: true,
-                        width: 410,   //弹出框宽度
-                        height: 240,   //弹出框高度
-                        title: "用户登录",  //弹出框标题
-                        position: "center",  //窗口显示的位置
-                        buttons: {
-                            '确定': function () {//调用登录的方法
-
-
-                            },
-                            '取消': function () {
-                                $(this).dialog("close");
-                            }
-                        }
                     });
+                    $(function () {
 
-                    $(":button").click(function () {
-                        $("#dialogDiv").dialog("open");
+                        $("#dialog").dialog({
+                            autoOpen: false,
+                            modal:true,
+                            width:600,
+                            show: {
+                                effect: "blind",
+                                duration: 100
+                            },
+                            hide: {
+                                effect: "explode",
+                                duration: 100
+                            },
+                            buttons:{
+                                'confirm': function () {
+                                    var x =$(this).find('p').text();
+                                    var y =$(this).find('textarea').val();
+                                    $.ajax({
+                                        url: '/ajax4get/',
+                                        type: 'POST',
+                                        contentType: 'application/json',
+                                        data: JSON.stringify({
+                                            'username': x,
+                                            'con':y,
+                                        }),
+                                        headers: {'X-CSRFToken': $('[name="csrfmiddlewaretoken"]').val()},
+                                        success: function (data) {
+                                            alert('提交成功，实验顺利');
+                                            $("#dialog").dialog("close");
+                                            var link = $('<p>已签到</p>');
+                                            $("#" + x).hide();
+                                            $("#" + x).after(link);
+                                        },
+                                        error: function () {
+                                            alert('提交失败，请重试');
+                                            $("#dialog").dialog("close");
+                                        }
+                                    })
 
-                    })
+                                },
+                                'cancel': function () {
+                                    $("#dialog").dialog("close");
+                                }
+                            },
+                        });
+
+                        $("a").click(function () {
+
+                            var x =$(this).attr('id');
+                            if (x !== 'xyz1' && x !== 'xyz2' && x !== 'xyz3'){
+
+                                $("#dialog").find('p').html(''+x);
+
+                                $.ajax({
+                                    url: '/ajax5get/',
+                                    type: 'POST',
+                                    contentType: 'application/json',
+                                    data: JSON.stringify({
+                                        'username': x
+                                    }),
+                                    headers: {'X-CSRFToken': $('[name="csrfmiddlewaretoken"]').val()},
+                                    success: function (data) {
+                                        var dataObj = JSON.parse(data);
+                                        var a1 = dataObj['nianyue'];
+                                        var a2 = dataObj['shijian'];
+                                        var a3 = dataObj['ename'];
+                                        var cc1 = '<li>预约时间：' + a1 + a2 + '</li>';
+                                        var cc2 = '<li>预约设备：' + a3 + '</li>';
+                                        $("#dialog").find('ul').html('' + cc1 + cc2+'<li>签到信息：(请填写前检查设备状态，如有问题，及时联系管理员)</li>');
+                                    }
+                                });
+
+                                $("#dialog").find('textarea').html('请输入签到信息');
+                                $("#dialog").dialog("open");
+                            };
+                        });
+                    });
                 </script>
             </table>
             <style>
@@ -211,6 +269,7 @@
                     <th>预约设备</th>
                     <th>设备地点</th>
                     <th>设备负责人</th>
+                    <th>是否取消</th>
                     <th>是否正常履约</th>
 
                 </tr>
@@ -220,6 +279,14 @@
                     <td>{{item.yeid.ename}}</td>
                     <td>{{item.yeid.eshiyanshi}}</td>
                     <td>{{item.yeid.eguanliyuan}}</td>
+
+
+                    {% if item.isquxiao == True %}
+                    <td style="color: red">您已取消</td>
+                    {% else %}
+                    <td>正常履约</td>
+                    {% endif %}
+
                     {% if item.isqiandao == True %}
                     <td style="color: red">您已违约</td>
                     {% elif item.isqiandao == False %}
@@ -266,6 +333,12 @@
             联系人:徐老师&nbsp;联系方式:xxx-xxxxxx
         </i>
     </li>
+</div>
+
+<div id="dialog" title="签到">
+    <p style="display: none"></p>
+    <ul></ul>
+    <textarea rows="3" cols="60"></textarea>
 </div>
 
 </body>

@@ -6,8 +6,17 @@
     <title>Title</title>
     <link  rel="stylesheet" href="{% static 'css/new/index.css' %}"/>
     <link  rel="stylesheet" href="{% static 'css/font-awesome-4.7.0/css/font-awesome.min.css' %}"/>
-
+    <script src="{% static 'js/jQuery.js' %}" type="text/javascript" charset="UTF-8"></script>
 </head>
+<script>
+            $(document).ready(function () {
+                var x = $('#testha').text();
+                if (x > 0) {
+                    alert('您有预约还未签到，请签到')
+                }
+            })
+
+</script>
 <body>
 
     <div class="header">
@@ -172,6 +181,9 @@
                 联系人:徐老师&nbsp;联系方式:xxx-xxxxxx
             </i>
         </li>
+        <p id='testha' style="display: none">{{kk}}</p>
+
     </div>
+
 </body>
 </html>

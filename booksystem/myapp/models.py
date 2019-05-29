@@ -87,7 +87,7 @@ class yuyue(models.Model):
     shichang=models.DecimalField('时长',max_digits=5,decimal_places=1)
     yuyuebeizhu=models.CharField("备注",max_length=200,blank=True)
     shiyanfankui=models.CharField("实验反馈",max_length=200,blank=True)
-    isqiandao=models.BooleanField('违约',default=False)
+    isqiandao=models.BooleanField('违约',default=True)
     def __str__(self):
         return str("预约")
 

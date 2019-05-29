@@ -25,7 +25,7 @@ def index(request):
 
 class ep():
     def __init__(self,stu,num):
-        self.yuyue = yuyue.objects.filter(ysid=stu).order_by('-ydate')
+        self.yuyue = yuyue.objects.filter(ysid=stu).filter(isquxiao=False).order_by('-ydate')
         self.num =num
     def __getitem__(self, item):
         try:
@@ -83,7 +83,79 @@ def indextest(req):
             # print(stu1[i].yeid.ename)
     # print(elist)
 
-    return render(req,'indextest.html',{'ep':elist,'equip':fl,'stu':stu})
+    name = req.session.get('username')
+    stu = student.objects.filter(sname=name)[0]
+    stu1 = ep2(stu)
+    i = 0
+    kl = []
+    while type(stu1[i]) != type(1):
+        # print('2',stu1[i].yeid.ename)
+        kl.append(stu1[i])
+        i = i + 1
+
+    yuyuel = []
+    lishil = []
+    for item in kl:
+        # print('e',item.yeid.ename)
+        a = item.ytimestart
+        # print('a', a)
+        b = item.shichang
+        try:
+            x = re.search(r'([0-9]{2})：', a).group(1)
+            xx = str(int(int(x) + b)) + 'm'
+            yy = str(int(int(x) - 1))
+        except:
+            x = re.search(r'([0-9]{1})：', a).group(1)
+            x = '0' + x
+            xx = '0' + str(int(int(x) + b)) + 'm'
+            yy = '0' + str(int(int(x) - 1))
+        # print(yy)
+
+        yy = re.sub(r'([0-9]{1,2})：', yy, a).replace('m', '')
+        # print('try',yy)
+        xx = re.sub(r'([0-9]{1,2})：', xx, a)
+
+        xx = xx.replace('m', '：')
+        item.jieshushijian = xx
+        item.save()
+        try:
+            # print(a[4])
+            a = a.replace('：', '')
+            # print(a)
+        except:
+            a = '0' + a
+            a = a.replace('：', '')
+
+        xx = xx.replace('：', '')
+
+        # print(item.jieshushijian)
+        # print(xx)
+        if datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S") < (
+                item.ydate.strftime("%Y-%m-%d") + '-' + a):
+            # print(item.ydate.strftime("%Y-%m-%d") + '-' +a)
+            item.qiandaoshijian = False
+            if datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S") > (
+                    item.ydate.strftime("%Y-%m-%d") + '-' + yy):
+                item.qiandaoshijian = True
+            item.save()
+            yuyuel.append(item)
+            # print('当前时间',datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+            # print('预约时间',item.ydate.strftime("%Y-%m-%d") + ' ' + item.ytimestart)
+        elif datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S") > (
+                item.ydate.strftime("%Y-%m-%d") + '-' + a):
+            if datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S") < (
+                    item.ydate.strftime("%Y-%m-%d") + '-' + xx):
+                # print(item.yeid)
+                item.qiandaoshijian = True
+                item.save()
+                yuyuel.append(item)
+            else:
+                item.qiandaoshijian = False
+
+                lishil.append(item)
+    k=len(yuyuel)
+    print('cishu',k)
+    return render(req,'indextest.html',{'ep':elist,'equip':fl,'stu':stu,'kk':k})
 
 
 def baseinfo(request):
@@ -107,6 +179,10 @@ class ep2():
             return self.yuyue[item]
         except : return item
 
+
+
+
+
 @checklogin
 def myappointment(request):
     name = request.session.get('username')
@@ -124,23 +200,46 @@ def myappointment(request):
     for item in kl:
         # print('e',item.yeid.ename)
         a = item.ytimestart
-        # print(a)
+        print('a',a)
         b = item.shichang
-        x = re.search(r'([0-9])：', a).group(1)
-        x = str(int(int(x) + b)) + 'm'
-        xx = re.sub(r'([0-9])：', x, a)
+        try:
+            x = re.search(r'([0-9]{2})：', a).group(1)
+            xx = str(int(int(x) + b)) + 'm'
+            yy = str(int(int(x) - 1))
+        except:
+            x = re.search(r'([0-9]{1})：', a).group(1)
+            x='0'+x
+            xx = '0'+str(int(int(x) + b)) + 'm'
+            yy= '0'+str(int(int(x) -1))
+        # print(yy)
+
+        yy = re.sub(r'([0-9]{1,2})：', yy, a).replace('m', '')
+        # print('try',yy)
+        xx = re.sub(r'([0-9]{1,2})：', xx, a)
+
+
         xx = xx.replace('m', '：')
         item.jieshushijian = xx
         item.save()
-        a=a.replace('：','')
+        try:
+            print(a[4])
+            a=a.replace('：','')
+            print(a)
+        except:
+            a='0'+a
+            a=a.replace('：','')
+
         xx=xx.replace('：','')
 
         # print(item.jieshushijian)
         # print(xx)
         if datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S") < (
                 item.ydate.strftime("%Y-%m-%d") + '-' + a):
-            print(item.ydate.strftime("%Y-%m-%d") + '-' +a)
+            # print(item.ydate.strftime("%Y-%m-%d") + '-' +a)
             item.qiandaoshijian=False
+            if datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S") > (
+                item.ydate.strftime("%Y-%m-%d") + '-' + yy):
+                item.qiandaoshijian = True
             item.save()
             yuyuel.append(item)
             # print('当前时间',datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
@@ -149,7 +248,7 @@ def myappointment(request):
                 item.ydate.strftime("%Y-%m-%d") + '-' + a):
             if datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S") < (
                     item.ydate.strftime("%Y-%m-%d") + '-' + xx):
-                print(item.yeid)
+                # print(item.yeid)
                 item.qiandaoshijian = True
                 item.save()
                 yuyuel.append(item)
@@ -157,10 +256,11 @@ def myappointment(request):
                 item.qiandaoshijian = False
                 item.save()
                 lishil.append(item)
+    yuyuel.reverse()
 
     # print('历史预约：',lishil)
     # print('当前预约：',yuyuel)
-    return render(request,'myappointment.html',{'ep1':yuyuel,'ep2':lishil})
+    return render(request,'myappointment.html',{'ep1':yuyuel,'ep2':lishil,'stu':stu})
 
 class equi_p:
     def __init__(self,stu,ep):
@@ -181,7 +281,7 @@ def epappoint(request):
     eqlist=[]
     for item in ep:
         eqlist.append(equi_p(stu,item))
-    return render(request,'epappoit.html',{'equip':eqlist})
+    return render(request,'epappoit.html',{'equip':eqlist,'stu':stu})
 
 
 
@@ -207,7 +307,7 @@ def appoint(request,num1):
     rangelist = list(range(14))
     now_time = datetime.datetime.now()
     datelist = dateRange(now_time)
-    yue = yuyue.objects.filter(yeid=ep)
+    yue = yuyue.objects.filter(yeid=ep).filter(isquxiao=False)
     yueli=np.zeros((24,7),dtype=object)
     kkk = 0
     for item in datelist:
@@ -239,7 +339,7 @@ def appoint(request,num1):
                                           'yueli2': chuandi[7],'yueli3':chuandi[8],'yueli4':chuandi[9],'yueli5':chuandi[10],'yueli6':chuandi[11],'yueli7':chuandi[12],
                                           'yueli8': chuandi[13],'yueli9':chuandi[14],'yueli10':chuandi[15],'yueli11':chuandi[16],'yueli12':chuandi[17],'yueli13':chuandi[18],
                                           'yueli14': chuandi[19],'yueli15':chuandi[20],'yueli16':chuandi[21],'yueli17':chuandi[22],
-                                          'eid':num1,'username':name})
+                                          'eid':num1,'username':name,'stu':stu})
 @checklogin
 def appointfalse(request):
     return render(request,'appintfalse.html')
