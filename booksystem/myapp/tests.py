@@ -6,6 +6,26 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from .views import checklogin
 
+
+
+
+def isind(ydate,timestart,shichang):
+    ydate=datetime.datetime.strftime(ydate,'%Y-%m-%d')
+    shichang=int(shichang)
+    yuyuetime = ydate + ' '+timestart.replace('：',':')+':00'
+    yuyuetime = datetime.datetime.strptime(yuyuetime,"%Y-%m-%d %H:%M:%S")
+    nowtime = datetime.datetime.now()
+    ft = yuyuetime-datetime.timedelta(hours=1)
+    at = yuyuetime+datetime.timedelta(hours=shichang)
+    at_s = datetime.datetime.strftime(at,'%H：%M')
+    # if (nowtime-ft).total_seconds()>0 and (at-nowtime).total_seconds()>0 :
+    if  (at - nowtime).total_seconds() > 0:
+        if (nowtime - ft).total_seconds() > 0 :
+            return True,True,at_s
+        else:return True,False,at_s
+    else : return False,False,at_s
+
+
 def addteacher(request):
     return render(request,'addStudents.html')
 
@@ -83,84 +103,7 @@ def indextest(req):
             # print(stu1[i].yeid.ename)
     # print(elist)
 
-    name = req.session.get('username')
-    stu = student.objects.filter(sname=name)[0]
-    stu1 = ep2(stu)
-    i = 0
-    kl = []
-    while type(stu1[i]) != type(1):
-        # print('2',stu1[i].yeid.ename)
-        kl.append(stu1[i])
-        i = i + 1
 
-    yuyuel = []
-    lishil = []
-    for item in kl:
-        # print('e',item.yeid.ename)
-        a = item.ytimestart
-        # print('a', a)
-        b = item.shichang
-        try:
-            x = re.search(r'([0-9]{2})：', a).group(1)
-            xx = str(int(int(x) + b)) + 'm'
-            yy = str(int(int(x) - 1))
-        except:
-            x = re.search(r'([0-9]{1})：', a).group(1)
-            x = '0' + x
-            xx = '0' + str(int(int(x) + b)) + 'm'
-            yy = '0' + str(int(int(x) - 1))
-        # print(yy)
-
-        yy = re.sub(r'([0-9]{1,2})：', yy, a).replace('m', '')
-        # print('try',yy)
-        xx = re.sub(r'([0-9]{1,2})：', xx, a)
-
-        xx = xx.replace('m', '：')
-        item.jieshushijian = xx
-        item.save()
-        try:
-            print(a[4])
-            a = a.replace('：', '')
-            # print(a)
-        except:
-            a = '0' + a
-            a = a.replace('：', '')
-
-        xx = xx.replace('：', '')
-
-        # print(item.jieshushijian)
-        # print(xx)
-        if datetime.datetime.now().strftime("%Y-%m-%d-%H%M") < (
-                item.ydate.strftime("%Y-%m-%d") + '-' + a):
-            # print(item.ydate.strftime("%Y-%m-%d") + '-' +a)
-            print(item.ydate.strftime("%Y-%m-%d") + '-' + a)
-            print(datetime.datetime.now().strftime("%Y-%m-%d-%H%M"))
-            item.qiandaoshijian = False
-            if datetime.datetime.now().strftime("%Y-%m-%d-%H%M") > (
-                    item.ydate.strftime("%Y-%m-%d") + '-' + yy):
-                item.qiandaoshijian = True
-
-                yuyuel.append(item)
-            item.save()
-
-            # print('当前时间',datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-            # print('预约时间',item.ydate.strftime("%Y-%m-%d") + ' ' + item.ytimestart)
-        elif datetime.datetime.now().strftime("%Y-%m-%d-%H%M") > (
-                item.ydate.strftime("%Y-%m-%d") + '-' + a):
-            if datetime.datetime.now().strftime("%Y-%m-%d-%H%M") < (
-                    item.ydate.strftime("%Y-%m-%d") + '-' + xx):
-                # print(item.yeid)
-                item.qiandaoshijian = True
-                item.save()
-                yuyuel.append(item)
-
-            else:
-                item.qiandaoshijian = False
-
-                lishil.append(item)
-    k=len(yuyuel)
-    for item in yuyuel:
-        print(item.ytimestart)
     return render(req,'indextest.html',{'ep':elist,'equip':fl,'stu':stu,'kk':k})
 
 
@@ -194,79 +137,28 @@ def myappointment(request):
     name = request.session.get('username')
     stu = student.objects.filter(sname=name)[0]
     stu1 = ep2(stu)
-    i=0
-    kl=[]
+    i = 0
+    kl = []
     while type(stu1[i]) != type(1):
         # print('2',stu1[i].yeid.ename)
         kl.append(stu1[i])
-        i=i+1
-
-    yuyuel=[]
-    lishil=[]
+        i = i + 1
+    yuyuel = []
+    lishil = []
     for item in kl:
-        # print('e',item.yeid.ename)
-        a = item.ytimestart
-        print('a',a)
-        b = item.shichang
-        try:
-            x = re.search(r'([0-9]{2})：', a).group(1)
-            xx = str(int(int(x) + b)) + 'm'
-            yy = str(int(int(x) - 1))
-        except:
-            x = re.search(r'([0-9]{1})：', a).group(1)
-            x='0'+x
-            xx = '0'+str(int(int(x) + b)) + 'm'
-            yy= '0'+str(int(int(x) -1))
-        # print(yy)
-
-        yy = re.sub(r'([0-9]{1,2})：', yy, a).replace('m', '')
-        # print('try',yy)
-        xx = re.sub(r'([0-9]{1,2})：', xx, a)
-
-
-        xx = xx.replace('m', '：')
-        item.jieshushijian = xx
-        item.save()
-        try:
-            print(a[4])
-            a=a.replace('：','')
-            print(a)
-        except:
-            a='0'+a
-            a=a.replace('：','')
-
-        xx=xx.replace('：','')
-
-        # print(item.jieshushijian)
-        # print(xx)
-        if datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S") < (
-                item.ydate.strftime("%Y-%m-%d") + '-' + a):
-            # print(item.ydate.strftime("%Y-%m-%d") + '-' +a)
-            item.qiandaoshijian=False
-            if datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S") > (
-                item.ydate.strftime("%Y-%m-%d") + '-' + yy):
-                item.qiandaoshijian = True
-            item.save()
+        a, c, b = isind(item.ydate, item.ytimestart, item.shichang)
+        if a:
             yuyuel.append(item)
-            # print('当前时间',datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-            # print('预约时间',item.ydate.strftime("%Y-%m-%d") + ' ' + item.ytimestart)
-        elif datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S") > (
-                item.ydate.strftime("%Y-%m-%d") + '-' + a):
-            if datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S") < (
-                    item.ydate.strftime("%Y-%m-%d") + '-' + xx):
-                # print(item.yeid)
+            if c:
                 item.qiandaoshijian = True
-                item.save()
-                yuyuel.append(item)
             else:
                 item.qiandaoshijian = False
-                item.save()
-                lishil.append(item)
-    yuyuel.reverse()
-
-    # print('历史预约：',lishil)
-    # print('当前预约：',yuyuel)
-    return render(request,'myappointment.html',{'ep1':yuyuel,'ep2':lishil,'stu':stu})
+        else:
+            lishil.append(item)
+            item.qiandaoshijian = False
+        item.jieshushijian = b
+        item.save()
+    return render(request, 'myappointment.html', {'ep1': yuyuel, 'ep2': lishil, 'stu': stu})
 
 class equi_p:
     def __init__(self,stu,ep):
